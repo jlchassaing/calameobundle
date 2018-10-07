@@ -11,6 +11,8 @@ namespace eZ\Publish\Core\FieldType\Tests;
 use CalameoBundle\FieldType\Calameo\Type as CalameoType;
 use CalameoBundle\FieldType\Calameo\Value as CalameoValue;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
+use eZ\Publish\Core\FieldType\ValidationError;
 
 /**
  * Class CalameoTypeTest
@@ -65,7 +67,7 @@ class CalameoTypeTest extends FieldTypeTest
         return array(
             array(
                 23,
-                InvalidArgumentException::class,
+                InvalidArgumentType::class,
             ),
             array(
                 new CalameoValue(23),
@@ -85,14 +87,31 @@ class CalameoTypeTest extends FieldTypeTest
                 new CalameoValue(),
             ),
             array(
-                'http://example.com/sindelfingen',
-                new CalameoValue('http://example.com/sindelfingen'),
+                'https://www.calameo.com/read/test',
+                new CalameoValue('https://www.calameo.com/read/test'),
             ),
             array(
-                new CalameoValue('http://example.com/sindelfingen'),
-                new CalameoValue('http://example.com/sindelfingen'),
+                new CalameoValue('https://www.calameo.com/read/test'),
+                new CalameoValue('https://www.calameo.com/read/test'),
             ),
         );
+    }
+
+    public function provideValidDataForValidate()
+    {
+        return [
+            [
+                ['url' , 'https://www.calameo.com/read/test'],
+                new CalameoValue('https://www.calameo.com/read/test'),
+            ]
+        ];
+    }
+
+    public function provideInValidDataForValidate()
+    {
+        return [
+
+        ];
     }
 
     /**
@@ -106,12 +125,12 @@ class CalameoTypeTest extends FieldTypeTest
                 null,
             ),
             array(
-                new CalameoValue('http://example.com/sindelfingen'),
-                 'http://example.com/sindelfingen',
+                new CalameoValue('https://www.calameo.com/read/test'),
+                 'https://www.calameo.com/read/test',
             ),
             array(
-                new CalameoValue('http://example.com/sindelfingen'),
-                'http://example.com/sindelfingen',
+                new CalameoValue('https://www.calameo.com/read/test'),
+                'https://www.calameo.com/read/test',
             ),
         );
     }
@@ -128,12 +147,12 @@ class CalameoTypeTest extends FieldTypeTest
             ],
             [
 
-                'http://example.com/sindelfingen',
-                new CalameoValue('http://example.com/sindelfingen'),
+                'https://www.calameo.com/read/test',
+                new CalameoValue('https://www.calameo.com/read/test'),
             ],
             [
-                'http://example.com/sindelfingen',
-                new CalameoValue('http://example.com/sindelfingen')
+                'https://www.calameo.com/read/test',
+                new CalameoValue('https://www.calameo.com/read/test')
             ],
         ];
     }
@@ -146,6 +165,7 @@ class CalameoTypeTest extends FieldTypeTest
 
     public function provideDataForGetName()
     {
+
         return array(
             array($this->getEmptyValueExpectation(), ''),
             array(new CalameoValue(''), ''),

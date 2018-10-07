@@ -8,12 +8,15 @@
 
 namespace CalameoBundle\FieldType\Calameo;
 
+use eZ\Publish\API\Repository\Values\ContentType\FieldDefinition;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
 use eZ\Publish\Core\FieldType\FieldType;
 use eZ\Publish\SPI\FieldType\TypeValue;
 use CalameoBundle\FieldType\Calameo\Value;
 use eZ\Publish\SPI\FieldType\Value as SPIValue;
 use eZ\Publish\Core\FieldType\Value as BaseValue;
+use eZ\Publish\SPI\Persistence\Content\FieldValue as PersistenceValue;
+use eZ\Publish\Core\FieldType\ValidationError;
 
 class Type extends FieldType
 {
@@ -47,6 +50,26 @@ class Type extends FieldType
         }
     }
 
+    public function validate( FieldDefinition $fieldDefinition, SPIValue $fieldValue )
+    {
+        $errors = [];
+
+        if ($this->isEmptyValue($fieldValue)) {
+            return $errors;
+        }
+
+        // Calameo URL validation
+        if (!preg_match('#^https?://www.calameo.com/read/.*$#', $fieldValue->url, $m)) {
+            $errors[] = new ValidationError(
+                'Invalid Calameo status URL %url%',
+                null,
+                ['%url%' => $fieldValue->url]
+            );
+        }
+        return $errors;
+
+    }
+
 
     public function getFieldTypeIdentifier()
     {
@@ -60,7 +83,7 @@ class Type extends FieldType
 
     public function getEmptyValue()
     {
-        return new Value();
+        return  new Value;
     }
 
     public function fromHash($hash)
@@ -89,4 +112,28 @@ class Type extends FieldType
     }
 
 
+    public function toPersistenceValue(SPIValue $value)
+    {
+        if ($value === null) {
+            return new PersistenceValue(null
+
+            );
+        }
+
+
+        return new PersistenceValue(
+            [
+                'url' => $this->toHash($value),
+            ]
+        );
+    }
+
+    public function fromPersistenceValue(PersistenceValue $fieldValue)
+    {
+        if ($fieldValue->data === null) {
+            return $this->getEmptyValue();
+        }
+
+        return new Value($fieldValue->data);
+    }
 }

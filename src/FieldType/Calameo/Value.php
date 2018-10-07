@@ -55,12 +55,10 @@ class Value extends CoreValue implements InterfaceValue
      */
     public function __construct( $properties = [] )
     {
-        if (!is_array($properties))
+        if (!is_array($properties) && $properties !== null)
         {
             $properties = ["url" => $properties];
         }
-
-        $properties["url"] = $properties['url'];
 
         parent::__construct( $properties );
 
