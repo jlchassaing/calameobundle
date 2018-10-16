@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        bootstrap="bootstrap.php"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        colors="true"
+>
+
+    <testsuites>
+        <testsuite name="CalameoBundle tests suite">
+            <directory suffix="Test.php">./src/Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>.</directory>
+            <exclude>
+                <directory>Tests</directory>
+                <directory>vendor</directory>
+                <file>CalameoBundle.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+
+</phpunit>
