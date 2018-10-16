@@ -8,6 +8,7 @@
 
 namespace CalameoBundle\FieldType\Calameo;
 
+use CalameoBundle\Calameo\Client;
 use eZ\Publish\API\Repository\Values\ContentType\FieldDefinition;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
 use eZ\Publish\Core\FieldType\FieldType;
@@ -17,21 +18,36 @@ use eZ\Publish\SPI\FieldType\Value as SPIValue;
 use eZ\Publish\Core\FieldType\Value as BaseValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue as PersistenceValue;
 use eZ\Publish\Core\FieldType\ValidationError;
+use http\Env\Response;
 
 class Type extends FieldType
 {
+    /**
+     * @var Client
+     */
+    private $client;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
 
     protected $validatorConfigurationSchema = [];
+    
+    
 
     protected function createValueFromInput( $inputValue )
     {
         if (is_string($inputValue)) {
-            $inputValue = new Value(['url' => $inputValue]);
+            $code = $this->client->getKeyFromUrl($inputValue);
+            $inputValue = new Value([
+                'url' => $inputValue,
+                ]);
         }
 
         return $inputValue;
     }
-
 
     /**
      * @param BaseValue $value
@@ -59,7 +75,7 @@ class Type extends FieldType
         }
 
         // Calameo URL validation
-        if (!preg_match('#^https?://www.calameo.com/read/.*$#', $fieldValue->url, $m)) {
+        if (!$this->client->isValidUrl($fieldValue->url)) {
             $errors[] = new ValidationError(
                 'Invalid Calameo status URL %url%',
                 null,
@@ -78,7 +94,10 @@ class Type extends FieldType
 
     public function getName( SPIValue $value )
     {
-        return (string)$value->url;
+        /*throw new \RuntimeException(
+            'Name generation provided via NameableField set via "ezpublish.fieldType.nameable" service tag'
+        );*/
+        return "calameo";
     }
 
     public function getEmptyValue()
@@ -108,25 +127,55 @@ class Type extends FieldType
             return null;
         }
 
-        return $value->url;
+        return ['url' => $value->url,'data' => $value->data];
     }
 
 
     public function toPersistenceValue(SPIValue $value)
     {
         if ($value === null) {
-            return new PersistenceValue(null
-
+            return new PersistenceValue(
+                array(
+                    'data' => array(),
+                    'externalData' => null,
+                    'sortKey' => null,
+                )
             );
         }
 
+        if ($value->name === null)
+        {
+            $code = $this->client->getKeyFromUrl($value->url);
+            $this->addToValue($value,$this->client->getBookInfo($code))
+                 ->addToValue($value,$this->client->getToc($code));
+
+        }
 
         return new PersistenceValue(
             [
-                'url' => $this->toHash($value),
+            'data' => $this->toHash($value),
+            'sortKey' => $this->getSortInfo($value),
             ]
         );
     }
+
+    public function addToValue($value, \CalameoBundle\Calameo\Response $data)
+    {
+        if (!$data->isError())
+        {
+            foreach ( $data->getContent() as $key => $v )
+            {
+                $value->$key = $v;
+            }
+        }
+        return $this;
+    }
+
+    protected function getSortInfo( BaseValue $value )
+    {
+        return (string)$value->url;
+    }
+
 
     public function fromPersistenceValue(PersistenceValue $fieldValue)
     {

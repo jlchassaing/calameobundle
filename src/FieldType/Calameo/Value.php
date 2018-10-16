@@ -27,25 +27,31 @@ class Value extends CoreValue implements InterfaceValue
     public $url;
 
     /**
-     * Calameo content name
-     *
-     * @var string
-     */
-    public $name;
-
-    /**
-     * Calamo table of contents
-     *
      * @var array
      */
-    public $toc;
+    public $data;
+
+    public function __set($name, $value)
+    {
+        $this->data[$name] = $value;
+    }
+
+    public function __get($name)
+    {
+        return $this->data[$name];
+    }
+
+    public function  __call($name,$args = null)
+    {
+        return $this->data[$name];
+    }
 
     /**
      * @return string
      */
     public function __toString()
     {
-       return $this->url;
+       return ['url' => $this->url];
     }
 
     /**

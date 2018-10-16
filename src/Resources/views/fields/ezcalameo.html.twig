@@ -1,0 +1,12 @@
+{% extends "EzPublishCoreBundle::content_fields.html.twig" %}
+
+{% block ezcalameo_field %}
+    {% spaceless %}
+        {% set field_value %}
+            {{ (field.value.Name) }}
+
+            <img src="{{field.value.PosterUrl  }}" />
+        {% endset %}
+        {{ block( 'simple_block_field' ) }}
+    {% endspaceless %}
+{% endblock %}

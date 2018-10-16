@@ -1,0 +1,19 @@
+system:
+  default:
+    yui:
+      combine: true
+      modules:
+        calameoeditview-ez-template:
+          type: 'template'
+          path: 'bundles/calameo/templates/fields/edit/calameo.hbt'
+        ez-calameo-editview:
+          requires: ['ez-fieldeditview', 'event-valuechange', 'calameoeditview-ez-template', 'ez-translator']
+          dependencyOf: ['ez-contenteditformview']
+          path: "bundles/calameo/js/views/fields/ez-calameo-editview.js"
+        calameoview-ez-template:
+          type: 'template'
+          path: 'bundles/calameo/templates/fields/view/calameo.hbt'
+        ez-calameo-view:
+          requires: ['ez-fieldview', 'calameoview-ez-template']
+          dependencyOf: ['ez-rawcontentview']
+          path: 'bundles/calameo/js/views/fields/ez-calameo-view.js'

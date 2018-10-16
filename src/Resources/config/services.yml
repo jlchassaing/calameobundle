@@ -1,0 +1,10 @@
+services:
+  ezsystems.calameobundle.calameo.client:
+    class: CalameoBundle\Calameo\Client
+    arguments:
+      - '@service_container'
+
+  ezsystems.calameobundle.fieldtype.ezcalameo.converter:
+    class: CalameoBundle\FieldType\Calameo\LegacyConverter
+    tags:
+    - {name: ezpublish.storageEngine.legacy.converter, alias: ezcalameo}

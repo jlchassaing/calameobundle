@@ -8,24 +8,42 @@
  */
 namespace eZ\Publish\Core\FieldType\Tests;
 
+use CalameoBundle\Calameo\Client;
 use CalameoBundle\FieldType\Calameo\Type as CalameoType;
 use CalameoBundle\FieldType\Calameo\Value as CalameoValue;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
 use eZ\Publish\Core\FieldType\ValidationError;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class CalameoTypeTest
  * @package eZ\Publish\Core\FieldType\Tests
  */
-class CalameoTypeTest extends FieldTypeTest
+class CalameoTypeTest extends FieldTypeTest 
 {
+    private $client;
+    
+    public function setUp()
+    {
+        $container = $this->createMock(Container::class);
+        $container->method("getParameter")
+            ->willReturn(['iframeParams' => [], 'paths' => ['iframe' => '','toc'=> ''], 'api' => []]);
+
+        $this->client = new Client($container);
+    }
+    
+    public function getNewCalameoType()
+    {
+        return new CalameoType($this->client);
+    }
+
     /**
      * @return CalameoType|FieldType
      */
     protected function createFieldTypeUnderTest()
     {
-        $fieldType = new CalameoType();
+        $fieldType = $this->getNewCalameoType();
         $fieldType->setTransformationProcessor($this->getTransformationProcessorMock());
 
         return $fieldType;
@@ -88,7 +106,7 @@ class CalameoTypeTest extends FieldTypeTest
             ),
             array(
                 'https://www.calameo.com/read/test',
-                new CalameoValue('https://www.calameo.com/read/test'),
+                new CalameoValue(['url' => 'https://www.calameo.com/read/test']),
             ),
             array(
                 new CalameoValue('https://www.calameo.com/read/test'),
@@ -126,11 +144,11 @@ class CalameoTypeTest extends FieldTypeTest
             ),
             array(
                 new CalameoValue('https://www.calameo.com/read/test'),
-                 'https://www.calameo.com/read/test',
+                 ['url' => 'https://www.calameo.com/read/test', 'data' => null]
             ),
             array(
                 new CalameoValue('https://www.calameo.com/read/test'),
-                'https://www.calameo.com/read/test',
+                ['url' => 'https://www.calameo.com/read/test', 'data' => null]
             ),
         );
     }
@@ -166,10 +184,7 @@ class CalameoTypeTest extends FieldTypeTest
     public function provideDataForGetName()
     {
 
-        return array(
-            array($this->getEmptyValueExpectation(), ''),
-            array(new CalameoValue(''), ''),
-        );
+        return null;
     }
 
     public function provideValidFieldSettings()
