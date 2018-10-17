@@ -9,10 +9,14 @@
 namespace CalameoBundle\Tests\Calameo;
 
 use CalameoBundle\Calameo\Client;
+use CalameoBundle\DependencyInjection\Configuration;
 use function GuzzleHttp\Psr7\build_query;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\TestCase;
 
-class CalameoTest extends KernelTestCase
+
+use Symfony\Component\DependencyInjection\Container;
+
+class CalameoTest extends TestCase
 {
 
     /**
@@ -22,9 +26,24 @@ class CalameoTest extends KernelTestCase
 
     public function setUp()
     {
-        self::bootKernel();
 
-        $this->client = static::$kernel->getContainer()->get('ezsystems.calameobundle.calameo.client');
+        $container = $this->createMock(Container::class);
+        $container->method("getParameter")
+                  ->willReturn([
+                      'iframeParams' => [
+                          'mode'=>'mini',
+                          'showsharemenu'=>'false',
+                          'clickto'=>'view',
+                          'clicktarget'=>'_blank',
+                      ],
+                      'paths' => [
+                          'iframe' => '//v.calameo.com/',
+                          'toc'=> ''
+                      ],
+                      'api' => []
+                  ]);
+
+        $this->client = new Client($container);
     }
 
     public function providerForIsValidUrl()

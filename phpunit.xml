@@ -11,6 +11,7 @@
         colors="true"
 >
 
+
     <testsuites>
         <testsuite name="CalameoBundle tests suite">
             <directory suffix="Test.php">./src/Tests</directory>
