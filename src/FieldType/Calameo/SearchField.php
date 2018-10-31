@@ -32,7 +32,7 @@ class SearchField implements Indexable
         return array(
             new Search\Field(
                 'value_url',
-                $field->value->data['url'],
+                array_key_exists('url',$field->value->data) ? $field->value->data['url'] : '',
                 new Search\FieldType\StringField()
             ),
         );

@@ -37,10 +37,9 @@ class Type extends FieldType
     
     
 
-    protected function createValueFromInput( $inputValue )
+    protected function createValueFromInput( $inputValue = null )
     {
-        if (is_string($inputValue)) {
-            $code = $this->client->getKeyFromUrl($inputValue);
+        if (is_string($inputValue) && $inputValue !== '') {
             $inputValue = new Value([
                 'url' => $inputValue,
                 ]);
@@ -133,7 +132,7 @@ class Type extends FieldType
 
     public function toPersistenceValue(SPIValue $value)
     {
-        if ($value === null) {
+        if ($value->url === null) {
             return new PersistenceValue(
                 array(
                     'data' => array(),
@@ -142,6 +141,7 @@ class Type extends FieldType
                 )
             );
         }
+
 
         if ($value->name === null)
         {
