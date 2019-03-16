@@ -1,5 +1,15 @@
+# You must set the  api key and secret to be able to ues this extension
+# retreive your set of keys on  calameo
+#calameo:
+#   paths: ~
+#   api:
+#      key: ~
+#      secret: ~
+#   iframeParams: ~
 
 calameo:
    paths: ~
-   api: ~
+   api:
+      key: ~
+      secret: ~
    iframeParams: ~

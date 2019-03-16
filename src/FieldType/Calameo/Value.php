@@ -38,7 +38,9 @@ class Value extends CoreValue implements InterfaceValue
 
     public function __get($name)
     {
-        return $this->data[$name];
+        return $this->data !== null ?
+         array_key_exists($name,$this->data) ? $this->data[$name] : null
+            : null;
     }
 
     public function  __call($name,$args = null)
@@ -51,7 +53,8 @@ class Value extends CoreValue implements InterfaceValue
      */
     public function __toString()
     {
-       return ['url' => $this->url];
+        return $this->data['Name'] === null ? $this->url: "no";
+       // return ['url' => $this->url];
     }
 
     /**

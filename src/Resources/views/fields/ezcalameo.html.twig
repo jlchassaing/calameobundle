@@ -1,12 +1,57 @@
 {% extends "EzPublishCoreBundle::content_fields.html.twig" %}
 
 {% block ezcalameo_field %}
-    {% spaceless %}
-        {% set field_value %}
-            {{ (field.value.Name) }}
+    {% spaceless %}{{ dump('TEST') }}
+        {#% set field_value %}
 
+            {% if parameters.poster is defined %}
             <img src="{{field.value.PosterUrl  }}" />
-        {% endset %}
+            {% endif %}
+            {% if parameters.toc is defined %}
+                {% if field.value.total %}
+                    <style>
+                        .calameo-toc{list-style: none;padding-left:0px}
+                        .calameo-toc-level{line-height: 2em}
+                        .calameo-toc-level1{font-weight: bold}
+                        .calameo-toc-level2{font-weight: normal;padding-left:15px}
+                    </style>
+                    {% set l = 1 %}
+                <ul class="calameo-toc">
+                {% for item in field.value.items|reverse %}
+                    {% if item.Level == l %}
+                        </li>
+                    {% elseif item.Level > l %}
+                    <ul class="calameo-toc">
+                    {% elseif item.Level < l %}
+                        </ul></li>
+                    {% endif %}
+                    {% set l = item.Level %}
+                    <li class="calameo-toc-level {{ 'calameo-toc-level' ~ item.Level }}"><a href="{{ field.value.PublicUrl ~ '?page=' ~ item.PageNumber }}" target="_blank" > {{ item.Name }} - {{ item.PageNumber }}</a>
+                {% endfor %}
+                        {% if l > 1 %}
+                    </li></ul>
+                        {% endif %}
+                    </li>
+                </ul>
+                    {% endif %}
+            {% endif %}
+            {% if parameters.mini is defined %}
+                <div style="text-align:center;">
+                    <div style="margin:8px 0px 4px;">
+                        <a href="{{ field.value.PublicUrl }}" target="_blank">{{ field.value.Name }}</a></div>
+                <div style="position: relative;height: 0;padding-bottom: 56.25%;margin-bottom: 10px;">
+                <div style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;">
+                    <iframe src="{{ '//v.calameo.com/?bkcode=' ~ field.value.ID ~ '&mode=mini&view=book&clickto=view&autoflip=4&clicktarget=_blank' }}"
+                            width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency allowfullscreen style="margin:0 auto;"></iframe>
+                </div>
+                </div>
+                </div>
+            {% endif %}
+            {% if parameters.biblio is defined %}
+                <iframe src="{{ '//v.calameo.com/library/?type=subscription&id=' ~ field.value.Subscription ~ '&rows=1&sortBy=latestIssue&theme=white&bgColor=ffffff&thumbSize=normal&showTitle=true&showShadow=false&showGloss=false&linkTo=embed' }}"
+                        allowfullscreen allowtransparency width="100%" height="100%" frameborder="0"></iframe>
+            {% endif %}
+        {% endset %#}
         {{ block( 'simple_block_field' ) }}
     {% endspaceless %}
 {% endblock %}

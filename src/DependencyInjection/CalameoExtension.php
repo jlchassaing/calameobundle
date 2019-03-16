@@ -51,4 +51,11 @@ class CalameoExtension extends Extension implements PrependExtensionInterface
         $container->prependExtensionConfig($extensionName, $param !== null ? $config[$param]: $config);
     }
 
+    public function getTranslationDomains()
+    {
+        return [
+            'ezcalameo'
+        ];
+    }
+
 }
