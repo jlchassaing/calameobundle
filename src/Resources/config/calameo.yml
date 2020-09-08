@@ -10,6 +10,6 @@
 calameo:
    paths: ~
    api:
-      key: ~
-      secret: ~
+      key: SetAKey
+      secret: SetASecret
    iframeParams: ~
