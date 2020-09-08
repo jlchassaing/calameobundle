@@ -37,8 +37,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root( 'calameo' );
+        $treeBuilder = new TreeBuilder('calameo');
+        $rootNode    = $treeBuilder->getRootNode();
 
         $rootNode->children()
                 ->arrayNode( 'paths' )
