@@ -28,7 +28,6 @@ class CalameoExtension extends Extension implements PrependExtensionInterface
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-        $loader->load('fieldtypes.yml');
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -40,8 +39,6 @@ class CalameoExtension extends Extension implements PrependExtensionInterface
     {
         $configDirectoryPath = __DIR__.'/../Resources/config';
 
-        $this->prependYamlConfigFile($container, 'ez_platformui', $configDirectoryPath.'/yui.yml');
-        $this->prependYamlConfigFile($container, 'ezpublish', $configDirectoryPath.'/ez_field_templates.yml');
         $this->prependYamlConfigFile($container, 'calameo', $configDirectoryPath.'/calameo.yml', 'calameo');
     }
 
