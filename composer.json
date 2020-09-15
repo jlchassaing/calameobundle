@@ -25,5 +25,11 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^5.4"
+  },
+  "extra": {
+	  "branch-alias": {
+	  	"dev-ez2.5": "1.x-dev"
+	  }
   }
+
 }
