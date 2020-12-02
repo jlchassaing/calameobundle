@@ -1,8 +1,21 @@
 services:
-  ezsystems.calameobundle.calameo.client:
-    class: CalameoBundle\Calameo\Client
+
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  CalameoBundle\Calameo\Client:
     arguments:
-      - '@service_container'
+      - '%calameo%'
+
+  ezsystems.calameobundle.calameo.client:
+    alias: CalameoBundle\Calameo\Client
+
+  CalameoBundle\Twig\CalameoRuntime: ~
+
+  CalameoBundle\Twig\CalameoExtension:
+    tags: ['twig.extension']
 
   ezsystems.calameobundle.fieldtype.ezcalameo.converter:
     class: CalameoBundle\FieldType\Calameo\LegacyConverter
