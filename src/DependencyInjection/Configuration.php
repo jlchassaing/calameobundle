@@ -71,6 +71,8 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->scalarNode('clicktarget')->defaultValue('_blank')->end()
                         ->scalarNode('clickto')->defaultValue('view')->end()
+                        ->scalarNode('autoflip')->defaultValue(4)->end()
+                        ->scalarNode('page')->defaultValue(2)->end()
                         ->scalarNode("showsharemenu")->defaultValue('false')->end()
                     ->end()
                 ->end()

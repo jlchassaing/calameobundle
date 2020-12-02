@@ -27,9 +27,9 @@ class Client
 
     private $config;
 
-    public function __construct(Container $container)
+    public function __construct($calameoParameters)
     {
-        $this->config = $container->getParameter( 'calameo');
+        $this->config = $calameoParameters;
 
     }
 
@@ -175,9 +175,17 @@ class Client
         $request->send();
         $response = $request->getResponse();
 
-        $body = $response->getBody(true);
+        if ($response->isError()){
+            dump($response->getMessage());
+        }
+        if ($response->getStatusCode() === 200){
+            $body = $response->getBody(true);
 
-        return json_decode($body, true);
+            return json_decode($body, true);
+        } else {
+            dump($response->getBody());
+        }
+
     }
 
 
