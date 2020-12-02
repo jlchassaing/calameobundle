@@ -175,16 +175,11 @@ class Client
         $request->send();
         $response = $request->getResponse();
 
-        if ($response->isError()){
-
-        if ($response->getStatusCode() === 200){
+        if ($response->getStatusCode() === 200) {
             $body = $response->getBody(true);
 
             return json_decode($body, true);
-        } else {
-
         }
-
     }
 
 
