@@ -17,4 +17,3 @@ services:
   CalameoBundle\Twig\CalameoExtension:
     tags: ['twig.extension']
 
-
