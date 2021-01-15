@@ -1,7 +1,4 @@
-{% extends "EzPublishCoreBundle::content_fields.html.twig" %}
-
 {% block ezcalameo_field %}
-    {% spaceless %}
         {#% set field_value %}
 
             {% if parameters.poster is defined %}
@@ -53,5 +50,5 @@
             {% endif %}
         {% endset %#}
         {{ block( 'simple_block_field' ) }}
-    {% endspaceless %}
+
 {% endblock %}

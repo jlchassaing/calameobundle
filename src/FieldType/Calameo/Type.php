@@ -91,7 +91,7 @@ class Type extends FieldType
         return "ezcalameo";
     }
 
-    public function getName( SPIValue $value )
+    public function getName(\eZ\Publish\SPI\FieldType\Value $value, FieldDefinition $fieldDefinition, string $languageCode): string
     {
         /*throw new \RuntimeException(
             'Name generation provided via NameableField set via "ezpublish.fieldType.nameable" service tag'
