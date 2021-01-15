@@ -14,9 +14,8 @@
     }
   ],
   "require": {
-    "php": "^7.0",
-    "ezsystems/ezpublish-kernel": "^7.0@dev",
-    "symfony/symfony": "^3.4"
+    "php": "^7.3",
+    "ezsystems/ezpublish-kernel": "^1.1@dev"
   },
   "autoload": {
     "psr-4": {
@@ -27,9 +26,9 @@
     "phpunit/phpunit": "^5.4"
   },
   "extra": {
-	  "branch-alias": {
-	  	"dev-ez2.5": "1.x-dev"
-	  }
+    "branch-alias": {
+      "dev-ez2.5": "1.x-dev",
+      "dev-ez3.x": "2.x-dev"
+    }
   }
-
 }
