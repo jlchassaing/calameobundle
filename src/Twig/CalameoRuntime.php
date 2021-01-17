@@ -12,12 +12,16 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class CalameoRuntime implements RuntimeExtensionInterface
 {
+    public static $LARGE = 'PosterUrl';
+    public static $MEDIUM = 'PictureUrl';
+    public static $THUMB = 'ThumbUrl';
 
     private $calameService;
 
     public function __construct(Client $calameService)
     {
         $this->calameService = $calameService;
+
     }
 
     public function getToc(Content $content, $url_field)
@@ -33,11 +37,19 @@ class CalameoRuntime implements RuntimeExtensionInterface
         return $items;
     }
 
-    public function getPoster(Content $content, $url_field)
+    /**
+     * @param \eZ\Publish\API\Repository\Values\Content\Content $content
+     * @param $url_field
+     * @param string $size "thumb|medium|large"
+     *
+     * @return mixed
+     */
+    public function getPoster(Content $content, $url_field, $size = self::POSTER)
     {
+        $size = strtoupper($size);
         $bookId = $this->getBookId($content, $url_field);
         $result = $this->calameService->getBookInfo($bookId);
-        return $result->data['content']['PosterUrl'];
+        return $result->get(self::$$size);
     }
 
     public function getIframePath(Content $content, $url_field)
@@ -51,5 +63,12 @@ class CalameoRuntime implements RuntimeExtensionInterface
         $url = $content->getFieldValue($url_field)->link;
         $temp = explode('/',trim($url, '/'));
         return  array_pop($temp);
+    }
+    
+    public function getDescription($content, $url_field)
+    {
+        $bookId = $this->getBookId($content, $url_field);
+        $result = $this->calameService->getBookInfo($bookId);
+        return $result->get('Description');
     }
 }

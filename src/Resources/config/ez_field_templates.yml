@@ -1,4 +1,0 @@
-system:
-  default:
-    field_templates:
-    - {template: '@Calameo/fields/ezcalameo.html.twig', priority: 0}

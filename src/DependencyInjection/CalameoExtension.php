@@ -40,6 +40,7 @@ class CalameoExtension extends Extension implements PrependExtensionInterface
         $configDirectoryPath = __DIR__.'/../Resources/config';
 
         $this->prependYamlConfigFile($container, 'calameo', $configDirectoryPath.'/calameo.yml', 'calameo');
+        $this->prependYamlConfigFile($container, 'ezpublish', $configDirectoryPath.'/templates.yml', 'ezpublish' );
     }
 
     private function prependYamlConfigFile(ContainerBuilder $container, $extensionName, $configFilePath, $param = null)

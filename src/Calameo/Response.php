@@ -11,11 +11,10 @@ namespace CalameoBundle\Calameo;
 
 class Response
 {
-
+    private $data;
 
     public function __construct($response)
     {
-
         $this->data = $response['response'];
     }
 
@@ -39,7 +38,7 @@ class Response
         return $this->data['content'];
     }
 
-    public function __get( $name )
+    public function get( $name )
     {
         return $this->data['content'][$name];
     }

@@ -1,0 +1,46 @@
+{#
+Article - full CALAMEO
+#}
+
+{% extends "@ezdesign/pagelayout.html.twig" %}
+
+{% block principal %}
+    {% set summary = calameo_toc(content,'url') %}
+    <div class="row">
+        {% if summary is not empty %}
+            <div class="col-md-12">
+
+                <div class="attribute-long">
+                    <h1>{{ ez_content_name( content ) }}</h1>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="converture">
+                            <img src="{{ calameo_poster(content,'url') }}" width="100%" />
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="sommaire">
+
+                            <h3>Au sommaire dans ce numéro</h3>
+                            <ul>
+                                {% for item in summary %}
+                                    <li><a href="{{ url ~ "?page=" ~ item.PageNumber }}" target="_blank" >
+                                            <span class="texte">{{ item.Name }}</span><span class="page">
+                                                P. {{ item.PageNumber }}</span></a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-md-12">
+                <iframe src="{{ calameo_iframe(content,'url') }}"
+                        width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency allowfullscreen style="margin:0 auto;"></iframe>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
