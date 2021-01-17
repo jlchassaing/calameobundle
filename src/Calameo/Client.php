@@ -11,10 +11,7 @@ namespace CalameoBundle\Calameo;
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolver;
 
 use eZ\Publish\API\Repository\Tests\Values\User\Limitation\NewObjectStateLimitationTest;
-use Guzzle\Http\Url;
-use function GuzzleHttp\Psr7\build_query;
 use Symfony\Component\DependencyInjection\Container;
-
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class Client
@@ -26,11 +23,15 @@ class Client
     const FETCH_BOOK_INFO = 'getBookInfos';
 
     private $config;
+    
+    private $gateway;
 
-    public function __construct($calameoParameters)
+    private $currentData;
+
+    public function __construct($calameoParameters,  Gateway $gateway)
     {
         $this->config = $calameoParameters;
-
+        $this->gateway = $gateway;
     }
 
     /**
@@ -67,7 +68,7 @@ class Client
         $params += $this->config['iframeParams'];
 
         $scheme = "http";
-        $path = $this->config['paths']['iframe'] . "?" . build_query($params);
+        $path = $this->config['paths']['iframe'] . "?" . http_build_query($params);
 
         return $path;
 
@@ -109,24 +110,25 @@ class Client
 
    public function fetch($action, $bookId)
    {
-       if ($bookId == null) return null;
-       return  $this->call([
+       $requestUrl = $this->getUrl( [
            'action' => $action,
            "apikey" => $this->config['api']['key'],
            "book_id" => $bookId,
            "output"  => 'json',
        ]);
-
+       $key = $action.'_'.$bookId;
+       return $this->gateway->fetch($requestUrl, $key);
    }
 
 
-    public function call($params)
+    public function getUrl($params)
     {
         $signature = $this->getRequestSignature($params, $this->config['api']['secret']);
         $requestUrl = $this->getRequestUrl($this->config["paths"]['toc'], $params, $signature);
 
-        return new Response($this->getData($requestUrl));
+        return $requestUrl;
     }
+    
 
     /**
      * Generate the request Signature
@@ -156,7 +158,7 @@ class Client
      */
     public function getRequestUrl($apiHost,$params,$signature)
     {
-        $requestParams = build_query($params);
+        $requestParams = http_build_query($params);
 
         $requestParams.= "&signature=".$signature;
 
@@ -168,39 +170,27 @@ class Client
 //        return $this->getUrl("iframe", $calameo);
 //    }
 
-    public function getData($url)
-    {
-        $guzzle = new \Guzzle\Http\Client();
-        $request = $guzzle->createRequest('GET',$url);
-        $request->send();
-        $response = $request->getResponse();
-
-        if ($response->getStatusCode() === 200) {
-            $body = $response->getBody(true);
-
-            return json_decode($body, true);
-        }
-    }
+   
 
 
-    /**
-     * build full URL to different calameo path
-     * @param string $type
-     * @return string
-     */
-    public function getUrl($type, GieCalameo $calameo)
-    {
-
-        if (isset($this->apiParams[$type]))
-        {
-            $FixParams = $this->apiParams[$type]['Params'];
-            $Path = $this->apiParams[$type]['url'];
-            $Params = $this->apiParams['keys'];
-
-            return $this->buildUrl($Path, $this->buildParamsString($calameo, $Params, $FixParams));
-        }
-
-    }
+//    /**
+//     * build full URL to different calameo path
+//     * @param string $type
+//     * @return string
+//     */
+//    public function getUrl($type, GieCalameo $calameo)
+//    {
+//
+//        if (isset($this->apiParams[$type]))
+//        {
+//            $FixParams = $this->apiParams[$type]['Params'];
+//            $Path = $this->apiParams[$type]['url'];
+//            $Params = $this->apiParams['keys'];
+//
+//            return $this->buildUrl($Path, $this->buildParamsString($calameo, $Params, $FixParams));
+//        }
+//
+//    }
 
     /**
      * build url base on url path and params to be send

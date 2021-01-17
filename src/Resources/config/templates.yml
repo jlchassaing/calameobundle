@@ -1,0 +1,9 @@
+ezpublish:
+  system:
+    site_group:
+      content_view:
+        line:
+          calameo:
+            template: "@ezdesign/line/calameo.html.twig"
+            match:
+              Identifier\ContentType: "calameo"

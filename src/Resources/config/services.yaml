@@ -5,9 +5,14 @@ services:
     autoconfigure: true
     public: true
 
+  CalameoBundle\Calameo\Gateway:
+    arguments:
+      $cache: '@ezpublish.cache_pool'
+
   CalameoBundle\Calameo\Client:
     arguments:
       - '%calameo%'
+
 
   ezsystems.calameobundle.calameo.client:
     alias: CalameoBundle\Calameo\Client

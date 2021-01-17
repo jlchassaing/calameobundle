@@ -18,6 +18,7 @@ class CalameoExtension extends AbstractExtension
             new TwigFunction('calameo_toc', [CalameoRuntime::class, 'getToc']),
             new TwigFunction('calameo_poster', [CalameoRuntime::class,'getPoster']),
             new TwigFunction('calameo_iframe', [CalameoRuntime::class,'getIframePath']),
+            new TwigFunction('calameo_description', [CalameoRuntime::class,'getDescription']),
         ];
     }
 }
