@@ -12,15 +12,18 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class CalameoRuntime implements RuntimeExtensionInterface
 {
-    public static $LARGE = 'PosterUrl';
+    public static $POSTER = 'PosterUrl';
     public static $MEDIUM = 'PictureUrl';
     public static $THUMB = 'ThumbUrl';
 
-    private $calameService;
+    const DefautPosterSize = "POSTER";
 
-    public function __construct(Client $calameService)
+   /** @var \CalameoBundle\Calameo\Client  */
+    private $calameoService;
+
+    public function __construct(Client $calameoService)
     {
-        $this->calameService = $calameService;
+        $this->calameoService = $calameoService;
 
     }
 
@@ -28,8 +31,8 @@ class CalameoRuntime implements RuntimeExtensionInterface
     {
         $bookId = $this->getBookId($content, $url_field);
 
-        $toc = $this->calameService->getToc($bookId);
-        $items = $toc->data['content']['items'];
+        $toc = $this->calameoService->getToc($bookId);
+        $items = $toc->get('items');
 
         usort($items, function ($item1, $item2) {
             return $item1['PageNumber'] <=> $item2['PageNumber'];
@@ -44,18 +47,22 @@ class CalameoRuntime implements RuntimeExtensionInterface
      *
      * @return mixed
      */
-    public function getPoster(Content $content, $url_field, $size = self::POSTER)
+    public function getPoster(Content $content, $url_field, $size = self::DefautPosterSize)
     {
         $size = strtoupper($size);
         $bookId = $this->getBookId($content, $url_field);
-        $result = $this->calameService->getBookInfo($bookId);
-        return $result->get(self::$$size);
+        if ($bookId) {
+            $result = $this->calameoService->getBookInfo($bookId);
+            return $result->get(self::$$size);
+        }
+        return "://0";
+
     }
 
     public function getIframePath(Content $content, $url_field)
     {
         $bookId = $this->getBookId($content, $url_field);
-        return $this->calameService->getIframePath($bookId);
+        return $this->calameoService->getIframePath($bookId);
     }
 
     private function getBookId(Content $content, $url_field)
@@ -68,7 +75,7 @@ class CalameoRuntime implements RuntimeExtensionInterface
     public function getDescription($content, $url_field)
     {
         $bookId = $this->getBookId($content, $url_field);
-        $result = $this->calameService->getBookInfo($bookId);
+        $result = $this->calameoService->getBookInfo($bookId);
         return $result->get('Description');
     }
 }
