@@ -1,6 +1,6 @@
 ezpublish:
   system:
-    default:
+    sites:
       content_view:
         line:
           calameo:
