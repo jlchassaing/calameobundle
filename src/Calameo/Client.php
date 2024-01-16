@@ -67,7 +67,6 @@ class Client
         ];
         $params += $this->config['iframeParams'];
 
-        $scheme = "http";
         $path = $this->config['paths']['iframe'] . "?" . http_build_query($params);
 
         return $path;
